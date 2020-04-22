@@ -1,0 +1,2 @@
+maxloc computation (s) in 0.001272 seconds
+maxloc computation (omp) in 0.094689 seconds
