@@ -15,7 +15,7 @@ typedef double vect_t[DIM];
 
 int main()
 {
-    int n = 2000;
+    int n = 500;
     int T = 100;
     float delta_t = 0.05;
     float x_diff;
@@ -23,16 +23,17 @@ int main()
     float dist;
     float dist_cubed;
 
+    // omp_set_num_threads(8);
+
     vect_t* forces = malloc(n*sizeof(vect_t));
     vect_t* pos = malloc(n*sizeof(vect_t));
     vect_t* old_pos = malloc(n*sizeof(vect_t));
     vect_t* vel = malloc(n*sizeof(vect_t));
     double* masses = malloc(n*sizeof(double));
-    // double* force = malloc(n*sizeof(double)); // use for reduced alg
+    double* force = malloc(n*sizeof(double));
 
     // start timer
 	double start_time = omp_get_wtime();
-    omp_set_num_threads(32); // for question 3
 
     for (int step = 1; step <= T; step++)
     {
@@ -55,12 +56,8 @@ int main()
 
             masses[q] = fabs((rand() / (double)(RAND_MAX)) * 2 - 1);
         }
-        
+        /*
         // simple alg
-        // #pragma omp parallel for
-        // #pragma omp parallel for schedule(guided,5000)
-        // #pragma omp parallel for schedule(static,5000)
-        #pragma omp parallel for schedule(dynamic,5000)
         for (int q = 0; q < n; q++) { 
             for (int k = 0; k < n; k++) { 
                 if (k!=q) {
@@ -73,12 +70,9 @@ int main()
                 }  
             }
         }
-        /*
+        */
+
         // reduced alg
-        // #pragma omp parallel for
-        #pragma omp parallel for schedule(guided,5000)
-        // #pragma omp parallel for schedule(static,5000)
-        // #pragma omp parallel for schedule(dynamic,5000)
         for (int q = 0; q < n; q++) { 
             // forces[step][q] = 0;
             for (int k = 0; k < n; k++) { 
@@ -96,7 +90,6 @@ int main()
                 }  
             }
         } 
-        */
 
         for (int q = 0; q < n; q++) { 
             pos[q][X] += delta_t * vel[q][X];
